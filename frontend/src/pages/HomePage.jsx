@@ -1,29 +1,31 @@
+import { useState, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
+import { productAPI } from '../utils/api';
 
 export default function HomePage() {
-  const sampleProducts = [
-    {
-      id: 1,
-      name: 'Wireless Headphones',
-      description: 'High-quality wireless headphones with noise cancellation',
-      price: 99.99,
-      image: 'https://via.placeholder.com/300'
-    },
-    {
-      id: 2,
-      name: 'Smart Watch',
-      description: 'Feature-rich smartwatch with health tracking',
-      price: 199.99,
-      image: 'https://via.placeholder.com/300'
-    },
-    {
-      id: 3,
-      name: 'Laptop Stand',
-      description: 'Ergonomic laptop stand for better posture',
-      price: 49.99,
-      image: 'https://via.placeholder.com/300'
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await productAPI.getAll();
+      
+      if (response.data.success) {
+        setProducts(response.data.data);
+      }
+    } catch (err) {
+      setError('Failed to load products. Please try again later.');
+      console.error('Fetch products error:', err);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -34,11 +36,29 @@ export default function HomePage() {
         <p className="text-center text-gray-600 mb-12">
           Discover amazing products at unbeatable prices
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sampleProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-center">
+            {error}
+          </div>
+        )}
+
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-gray-600 text-xl">No products available yet.</p>
+            <p className="text-gray-500 mt-2">Check back soon for new arrivals!</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {products.map((product) => (
+              <ProductCard key={product._id} product={{ ...product, id: product._id }} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
