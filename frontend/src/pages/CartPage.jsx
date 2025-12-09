@@ -54,7 +54,7 @@ export default function CartPage() {
   };
 
   const handleCheckout = () => {
-    alert('Checkout functionality will be implemented in Phase 5');
+    navigate('/checkout');
   };
 
   if (loading) {

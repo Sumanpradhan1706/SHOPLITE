@@ -4,7 +4,7 @@ import { productAPI } from '../utils/api';
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -14,52 +14,82 @@ export default function HomePage() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
+      setError('');
       const response = await productAPI.getAll();
       
-      if (response.data.success) {
+      console.log('API Response:', response);
+      
+      if (response.data?.success) {
         setProducts(response.data.data);
+      } else if (response.data?.data) {
+        setProducts(response.data.data);
+      } else if (Array.isArray(response.data)) {
+        setProducts(response.data);
       }
     } catch (err) {
-      setError('Failed to load products. Please try again later.');
       console.error('Fetch products error:', err);
+      setError('Unable to connect to the server. Please ensure the backend is running on port 5000.');
+      setProducts([]);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
+    <div style={{ minHeight: '100vh', backgroundColor: '#f3f4f6' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1rem' }}>
+        <h1 style={{ fontSize: '2.25rem', fontWeight: 'bold', textAlign: 'center', color: '#1f2937', marginBottom: '2rem' }}>
           Welcome to ShopLite
         </h1>
-        <p className="text-center text-gray-600 mb-12">
+        <p style={{ textAlign: 'center', color: '#4b5563', marginBottom: '3rem' }}>
           Discover amazing products at unbeatable prices
         </p>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-center">
+          <div style={{ backgroundColor: '#fee2e2', border: '1px solid #fca5a5', color: '#991b1b', padding: '1rem', borderRadius: '0.375rem', marginBottom: '1.5rem', textAlign: 'center' }}>
             {error}
+            <button 
+              onClick={fetchProducts}
+              style={{ marginLeft: '1rem', textDecoration: 'underline', fontWeight: '600', cursor: 'pointer', background: 'none', border: 'none', color: 'inherit' }}
+            >
+              Retry
+            </button>
           </div>
         )}
 
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '5rem 0' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ 
+                animation: 'spin 1s linear infinite', 
+                width: '4rem', 
+                height: '4rem', 
+                border: '4px solid #ddd',
+                borderTop: '4px solid #2563eb',
+                borderRadius: '50%',
+                margin: '0 auto'
+              }}></div>
+              <p style={{ color: '#4b5563', marginTop: '1rem' }}>Loading products...</p>
+            </div>
           </div>
         ) : products.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-gray-600 text-xl">No products available yet.</p>
-            <p className="text-gray-500 mt-2">Check back soon for new arrivals!</p>
+          <div style={{ textAlign: 'center', padding: '5rem 0' }}>
+            <p style={{ color: '#4b5563', fontSize: '1.25rem' }}>No products available.</p>
+            <p style={{ color: '#6b7280', marginTop: '0.5rem' }}>Check back soon for new arrivals!</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
             {products.map((product) => (
               <ProductCard key={product._id} product={{ ...product, id: product._id }} />
             ))}
           </div>
         )}
       </div>
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }
