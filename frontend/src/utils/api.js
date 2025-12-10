@@ -36,7 +36,9 @@ api.interceptors.response.use(
 export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
   register: (userData) => api.post('/auth/register', userData),
-  getProfile: () => api.get('/auth/profile')
+  getProfile: () => api.get('/auth/profile'),
+  updateProfile: (userData) => api.put('/auth/profile', userData),
+  changePassword: (passwordData) => api.put('/auth/password', passwordData)
 };
 
 export const productAPI = {
@@ -53,6 +55,15 @@ export const cartAPI = {
   updateItem: (itemId, quantity) => api.put(`/cart/${itemId}`, { quantity }),
   removeItem: (itemId) => api.delete(`/cart/${itemId}`),
   clearCart: () => api.delete('/cart')
+};
+
+export const orderAPI = {
+  createOrder: (orderData) => api.post('/orders', orderData),
+  getOrders: () => api.get('/orders'),
+  getOrder: (id) => api.get(`/orders/${id}`),
+  updateOrderStatus: (id, status) => api.put(`/orders/${id}/status`, { status }),
+  cancelOrder: (id) => api.put(`/orders/${id}/cancel`),
+  getAllOrders: () => api.get('/orders/admin/all')
 };
 
 export default api;
