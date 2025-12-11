@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../utils/api';
 import { useAuth } from '../hooks/useAuth';
+import { showToast, getErrorMessage } from '../utils/toast';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -22,10 +23,13 @@ export default function LoginPage() {
       if (response.data.success) {
         const { user, token } = response.data.data;
         login(user, token);
+        showToast.success('Login successful!');
         navigate('/');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      const message = getErrorMessage(err);
+      setError(message);
+      showToast.error(message);
     } finally {
       setLoading(false);
     }

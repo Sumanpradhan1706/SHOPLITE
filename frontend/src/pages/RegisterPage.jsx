@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../utils/api';
 import { useAuth } from '../hooks/useAuth';
+import { showToast, getErrorMessage } from '../utils/toast';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -19,13 +20,17 @@ export default function RegisterPage() {
 
     // Validate passwords match
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      const message = 'Passwords do not match';
+      setError(message);
+      showToast.warning(message);
       return;
     }
 
     // Validate password length
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      const message = 'Password must be at least 6 characters';
+      setError(message);
+      showToast.warning(message);
       return;
     }
 
@@ -37,10 +42,13 @@ export default function RegisterPage() {
       if (response.data.success) {
         const { user, token } = response.data.data;
         login(user, token);
+        showToast.success('Registration successful!');
         navigate('/');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      const message = getErrorMessage(err);
+      setError(message);
+      showToast.error(message);
     } finally {
       setLoading(false);
     }
