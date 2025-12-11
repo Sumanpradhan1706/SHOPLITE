@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { productAPI } from '../utils/api';
+import { showToast, getErrorMessage } from '../utils/toast';
 
 const CATEGORIES = ['Electronics', 'Fashion', 'Home & Garden', 'Books', 'Sports', 'Toys'];
 
@@ -38,8 +39,11 @@ export default function AddProduct() {
         stock: product.stock,
         image: product.image,
       });
+      showToast.success('Product loaded successfully');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load product');
+      const message = getErrorMessage(err);
+      setError(message);
+      showToast.error(message);
     } finally {
       setLoading(false);
     }
@@ -59,17 +63,23 @@ export default function AddProduct() {
 
     // Validation
     if (!formData.name || !formData.description || !formData.category || !formData.price || !formData.stock || !formData.image) {
-      setError('All fields are required');
+      const message = 'All fields are required';
+      setError(message);
+      showToast.warning(message);
       return;
     }
 
     if (isNaN(formData.price) || parseFloat(formData.price) <= 0) {
-      setError('Price must be a positive number');
+      const message = 'Price must be a positive number';
+      setError(message);
+      showToast.warning(message);
       return;
     }
 
     if (isNaN(formData.stock) || parseInt(formData.stock) < 0) {
-      setError('Stock must be a non-negative number');
+      const message = 'Stock must be a non-negative number';
+      setError(message);
+      showToast.warning(message);
       return;
     }
 
@@ -87,13 +97,17 @@ export default function AddProduct() {
 
       if (id) {
         await productAPI.update(id, payload);
+        showToast.success('Product updated successfully');
       } else {
         await productAPI.create(payload);
+        showToast.success('Product created successfully');
       }
 
       navigate('/admin');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save product');
+      const message = getErrorMessage(err);
+      setError(message);
+      showToast.error(message);
     } finally {
       setLoading(false);
     }

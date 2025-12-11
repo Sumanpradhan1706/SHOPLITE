@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './components/Navbar';
+import ErrorBoundary from './components/ErrorBoundary';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import HomePage from './pages/HomePage';
@@ -17,12 +20,25 @@ import { CartProvider } from './context/CartContext';
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
-          <div className="min-h-screen bg-gray-50">
-            <Navbar />
-            <Routes>
+    <ErrorBoundary>
+      <AuthProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <div className="min-h-screen bg-gray-50">
+              <Navbar />
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
+              <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
@@ -84,10 +100,11 @@ function App() {
                 }
               />
             </Routes>
-          </div>
-        </BrowserRouter>
-      </CartProvider>
-    </AuthProvider>
+            </div>
+          </BrowserRouter>
+        </CartProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
