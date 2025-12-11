@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useCartContext } from '../context/CartContext';
 import { orderAPI, cartAPI } from '../utils/api';
+import { showToast, getErrorMessage } from '../utils/toast';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -46,13 +47,17 @@ export default function CheckoutPage() {
     setError('');
 
     if (cartItems.length === 0) {
-      setError('Your cart is empty');
+      const message = 'Your cart is empty';
+      setError(message);
+      showToast.warning(message);
       return;
     }
 
     // Validation
     if (!formData.firstName || !formData.lastName || !formData.phone || !formData.address || !formData.city || !formData.state || !formData.zipCode) {
-      setError('All fields are required');
+      const message = 'All fields are required';
+      setError(message);
+      showToast.warning(message);
       return;
     }
 
@@ -84,6 +89,7 @@ export default function CheckoutPage() {
       const response = await orderAPI.createOrder(orderData);
       setOrderId(response._id);
       setOrderPlaced(true);
+      showToast.success('Order placed successfully!');
 
       // Clear cart after successful order
       clearCart();
@@ -95,7 +101,9 @@ export default function CheckoutPage() {
         console.log('Cart clear notice:', err.message);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to place order');
+      const message = getErrorMessage(err);
+      setError(message);
+      showToast.error(message);
     } finally {
       setLoading(false);
     }
