@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { showToast, getErrorMessage } from './toast';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -25,10 +26,29 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Handle 401 Unauthorized
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
+      showToast.error('Session expired. Please log in again.');
       window.location.href = '/login';
     }
+    // Handle 403 Forbidden
+    else if (error.response?.status === 403) {
+      showToast.error('You do not have permission to perform this action.');
+    }
+    // Handle 404 Not Found
+    else if (error.response?.status === 404) {
+      showToast.error('Resource not found.');
+    }
+    // Handle 500 Server Error
+    else if (error.response?.status === 500) {
+      showToast.error('Server error. Please try again later.');
+    }
+    // Handle network errors
+    else if (!error.response) {
+      showToast.error('Network error. Please check your connection.');
+    }
+    
     return Promise.reject(error);
   }
 );
