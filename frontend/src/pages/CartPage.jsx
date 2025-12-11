@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cartAPI } from '../utils/api';
 import { useAuth } from '../hooks/useAuth';
+import { showToast, getErrorMessage } from '../utils/toast';
 
 export default function CartPage() {
   const [cart, setCart] = useState(null);
@@ -26,7 +27,9 @@ export default function CartPage() {
         setCart(response.data.data);
       }
     } catch (err) {
-      setError('Failed to load cart');
+      const message = 'Failed to load cart';
+      setError(message);
+      showToast.error(message);
       console.error('Fetch cart error:', err);
     } finally {
       setLoading(false);
@@ -37,8 +40,10 @@ export default function CartPage() {
     try {
       await cartAPI.updateItem(productId, newQuantity);
       await fetchCart();
+      showToast.success('Cart updated');
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to update quantity');
+      const message = getErrorMessage(err);
+      showToast.error(message);
     }
   };
 
@@ -48,8 +53,10 @@ export default function CartPage() {
     try {
       await cartAPI.removeItem(productId);
       await fetchCart();
+      showToast.success('Item removed from cart');
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to remove item');
+      const message = getErrorMessage(err);
+      showToast.error(message);
     }
   };
 

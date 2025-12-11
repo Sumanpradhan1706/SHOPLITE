@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { authAPI } from '../utils/api';
+import { showToast, getErrorMessage } from '../utils/toast';
 
 export default function ProfilePage() {
   const { user, login } = useAuth();
@@ -57,7 +58,9 @@ export default function ProfilePage() {
     setSuccess('');
 
     if (!formData.name || !formData.email) {
-      setError('Name and email are required');
+      const message = 'Name and email are required';
+      setError(message);
+      showToast.warning(message);
       return;
     }
 
@@ -69,10 +72,13 @@ export default function ProfilePage() {
         const updatedUser = response.data.data;
         login(updatedUser, localStorage.getItem('token'));
         setSuccess('Profile updated successfully!');
+        showToast.success('Profile updated successfully!');
         setIsEditing(false);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update profile');
+      const message = getErrorMessage(err);
+      setError(message);
+      showToast.error(message);
     } finally {
       setLoading(false);
     }
@@ -84,17 +90,23 @@ export default function ProfilePage() {
     setSuccess('');
 
     if (!passwordData.currentPassword || !passwordData.newPassword) {
-      setError('All password fields are required');
+      const message = 'All password fields are required';
+      setError(message);
+      showToast.warning(message);
       return;
     }
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setError('New passwords do not match');
+      const message = 'New passwords do not match';
+      setError(message);
+      showToast.warning(message);
       return;
     }
 
     if (passwordData.newPassword.length < 6) {
-      setError('New password must be at least 6 characters');
+      const message = 'New password must be at least 6 characters';
+      setError(message);
+      showToast.warning(message);
       return;
     }
 
@@ -107,6 +119,7 @@ export default function ProfilePage() {
 
       if (response.data.success) {
         setSuccess('Password changed successfully!');
+        showToast.success('Password changed successfully!');
         setPasswordData({
           currentPassword: '',
           newPassword: '',
@@ -114,7 +127,9 @@ export default function ProfilePage() {
         });
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to change password');
+      const message = getErrorMessage(err);
+      setError(message);
+      showToast.error(message);
     } finally {
       setLoading(false);
     }
