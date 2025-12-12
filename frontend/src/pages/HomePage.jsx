@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
+import { ProductGridSkeleton } from '../components/SkeletonLoader';
 import { productAPI } from '../utils/api';
 
 export default function HomePage() {
@@ -58,20 +59,7 @@ export default function HomePage() {
         )}
 
         {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '5rem 0' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ 
-                animation: 'spin 1s linear infinite', 
-                width: '4rem', 
-                height: '4rem', 
-                border: '4px solid #ddd',
-                borderTop: '4px solid #2563eb',
-                borderRadius: '50%',
-                margin: '0 auto'
-              }}></div>
-              <p style={{ color: '#4b5563', marginTop: '1rem' }}>Loading products...</p>
-            </div>
-          </div>
+          <ProductGridSkeleton count={8} />
         ) : products.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '5rem 0' }}>
             <p style={{ color: '#4b5563', fontSize: '1.25rem' }}>No products available.</p>
@@ -85,11 +73,7 @@ export default function HomePage() {
           </div>
         )}
       </div>
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+
     </div>
   );
 }

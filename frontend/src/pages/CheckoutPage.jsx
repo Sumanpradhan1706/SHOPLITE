@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useCartContext } from '../context/CartContext';
 import { orderAPI, cartAPI } from '../utils/api';
 import { showToast, getErrorMessage } from '../utils/toast';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -182,7 +183,15 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 relative">
+      {loading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 text-center">
+            <LoadingSpinner size="large" message="Processing your order..." />
+          </div>
+        </div>
+      )}
+      
       <h1 className="text-3xl font-bold mb-8">Checkout</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
