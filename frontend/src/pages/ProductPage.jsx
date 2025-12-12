@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { productAPI, cartAPI } from '../utils/api';
 import { useAuth } from '../hooks/useAuth';
+import { ProductDetailsSkeleton } from '../components/SkeletonLoader';
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -51,11 +52,7 @@ export default function ProductPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex justify-center items-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
-      </div>
-    );
+    return <ProductDetailsSkeleton />;
   }
 
   if (error || !product) {

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { orderAPI } from '../utils/api';
 import { useAuth } from '../hooks/useAuth';
+import { OrderHistorySkeleton } from '../components/SkeletonLoader';
 
 export default function OrderHistoryPage() {
   const navigate = useNavigate();
@@ -78,10 +79,12 @@ export default function OrderHistoryPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex justify-center items-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading orders...</p>
+      <div className="min-h-screen bg-gray-100">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-6xl mx-auto">
+            <h1 className="text-3xl font-bold text-gray-800 mb-8">Order History</h1>
+            <OrderHistorySkeleton />
+          </div>
         </div>
       </div>
     );
