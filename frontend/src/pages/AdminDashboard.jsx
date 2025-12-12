@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { productAPI } from '../utils/api';
+import { AdminTableSkeleton } from '../components/SkeletonLoader';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
@@ -27,21 +29,30 @@ export default function AdminDashboard() {
 
   const handleDelete = async (productId) => {
     try {
+      setDeleting(true);
       await productAPI.delete(productId);
       setProducts(products.filter(p => p._id !== productId));
       setDeleteConfirm(null);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to delete product');
+    } finally {
+      setDeleting(false);
     }
   };
 
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading products...</p>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <Link
+            to="/admin/add-product"
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded transition"
+          >
+            + Add Product
+          </Link>
         </div>
+        <AdminTableSkeleton rows={5} />
       </div>
     );
   }
@@ -130,13 +141,15 @@ export default function AdminDashboard() {
             <div className="flex gap-4">
               <button
                 onClick={() => handleDelete(deleteConfirm)}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded transition"
+                disabled={deleting}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded transition disabled:opacity-50"
               >
-                Delete
+                {deleting ? 'Deleting...' : 'Delete'}
               </button>
               <button
                 onClick={() => setDeleteConfirm(null)}
-                className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded transition"
+                disabled={deleting}
+                className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded transition disabled:opacity-50"
               >
                 Cancel
               </button>

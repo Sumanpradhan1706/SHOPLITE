@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { cartAPI } from '../utils/api';
 import { useAuth } from '../hooks/useAuth';
 import { showToast, getErrorMessage } from '../utils/toast';
+import { CartSkeleton } from '../components/SkeletonLoader';
 
 export default function CartPage() {
   const [cart, setCart] = useState(null);
@@ -65,11 +66,7 @@ export default function CartPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex justify-center items-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
-      </div>
-    );
+    return <CartSkeleton />;
   }
 
   return (
