@@ -10,6 +10,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -17,20 +18,17 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setErrors({});
 
-    // Validate passwords match
-    if (password !== confirmPassword) {
-      const message = 'Passwords do not match';
-      setError(message);
-      showToast.warning(message);
-      return;
-    }
-
-    // Validate password length
-    if (password.length < 6) {
-      const message = 'Password must be at least 6 characters';
-      setError(message);
-      showToast.warning(message);
+    // Client-side validation
+    const newErrors = {};
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!name) newErrors.name = 'Name is required';
+    if (!email || !emailRegex.test(email)) newErrors.email = 'Enter a valid email address';
+    if (password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+    if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
+    if (Object.keys(newErrors).length) {
+      setErrors(newErrors);
       return;
     }
 
@@ -79,6 +77,7 @@ export default function RegisterPage() {
               required
               disabled={loading}
             />
+            {errors.name && <p className="text-sm text-red-600 mt-1">{errors.name}</p>}
           </div>
           <div>
             <label className="block text-gray-700 mb-2" htmlFor="email">
@@ -93,6 +92,7 @@ export default function RegisterPage() {
               required
               disabled={loading}
             />
+            {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email}</p>}
           </div>
           <div>
             <label className="block text-gray-700 mb-2" htmlFor="password">
@@ -108,6 +108,7 @@ export default function RegisterPage() {
               disabled={loading}
               minLength={6}
             />
+            {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password}</p>}
           </div>
           <div>
             <label className="block text-gray-700 mb-2" htmlFor="confirmPassword">
@@ -123,6 +124,7 @@ export default function RegisterPage() {
               disabled={loading}
               minLength={6}
             />
+            {errors.confirmPassword && <p className="text-sm text-red-600 mt-1">{errors.confirmPassword}</p>}
           </div>
           <button
             type="submit"
