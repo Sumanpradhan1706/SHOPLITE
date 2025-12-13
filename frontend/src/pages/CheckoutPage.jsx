@@ -12,6 +12,7 @@ export default function CheckoutPage() {
   const { cartItems, clearCart, getCartTotal } = useCartContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState('');
 
@@ -46,6 +47,7 @@ export default function CheckoutPage() {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     setError('');
+    setErrors({});
 
     if (cartItems.length === 0) {
       const message = 'Your cart is empty';
@@ -54,11 +56,20 @@ export default function CheckoutPage() {
       return;
     }
 
-    // Validation
-    if (!formData.firstName || !formData.lastName || !formData.phone || !formData.address || !formData.city || !formData.state || !formData.zipCode) {
-      const message = 'All fields are required';
-      setError(message);
-      showToast.warning(message);
+    // Field-level client validation
+    const newErrors = {};
+    if (!formData.firstName) newErrors.firstName = 'First name is required';
+    if (!formData.lastName) newErrors.lastName = 'Last name is required';
+    const phoneRegex = /^\d{10}$/;
+    if (!formData.phone || !phoneRegex.test(formData.phone)) newErrors.phone = 'Enter a valid 10-digit phone number';
+    if (!formData.address) newErrors.address = 'Address is required';
+    if (!formData.city) newErrors.city = 'City is required';
+    if (!formData.state) newErrors.state = 'State is required';
+    const zipRegex = /^\d{4,6}$/;
+    if (!formData.zipCode || !zipRegex.test(formData.zipCode)) newErrors.zipCode = 'Enter a valid postal code';
+    if (Object.keys(newErrors).length) {
+      setErrors(newErrors);
+      showToast.warning('Please fix the highlighted fields');
       return;
     }
 
@@ -222,6 +233,7 @@ export default function CheckoutPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
                     disabled={loading}
                   />
+                  {errors.firstName && <p className="text-sm text-red-600 mt-1">{errors.firstName}</p>}
                 </div>
                 <div>
                   <label htmlFor="lastName" className="block text-sm font-semibold mb-2">
@@ -236,6 +248,7 @@ export default function CheckoutPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
                     disabled={loading}
                   />
+                  {errors.lastName && <p className="text-sm text-red-600 mt-1">{errors.lastName}</p>}
                 </div>
               </div>
 
@@ -268,6 +281,7 @@ export default function CheckoutPage() {
                   className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
                   disabled={loading}
                 />
+                {errors.phone && <p className="text-sm text-red-600 mt-1">{errors.phone}</p>}
               </div>
 
               <div className="mb-4">
@@ -284,6 +298,7 @@ export default function CheckoutPage() {
                   className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
                   disabled={loading}
                 />
+                {errors.address && <p className="text-sm text-red-600 mt-1">{errors.address}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-4">
@@ -301,6 +316,7 @@ export default function CheckoutPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
                     disabled={loading}
                   />
+                  {errors.city && <p className="text-sm text-red-600 mt-1">{errors.city}</p>}
                 </div>
                 <div>
                   <label htmlFor="state" className="block text-sm font-semibold mb-2">
@@ -316,6 +332,7 @@ export default function CheckoutPage() {
                     className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
                     disabled={loading}
                   />
+                  {errors.state && <p className="text-sm text-red-600 mt-1">{errors.state}</p>}
                 </div>
               </div>
 
@@ -333,6 +350,7 @@ export default function CheckoutPage() {
                   className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
                   disabled={loading}
                 />
+                  {errors.zipCode && <p className="text-sm text-red-600 mt-1">{errors.zipCode}</p>}
               </div>
             </div>
 
