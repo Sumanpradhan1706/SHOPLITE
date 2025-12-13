@@ -10,6 +10,7 @@ export default function AddProduct() {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -60,26 +61,28 @@ export default function AddProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    // Validation
-    if (!formData.name || !formData.description || !formData.category || !formData.price || !formData.stock || !formData.image) {
-      const message = 'All fields are required';
-      setError(message);
-      showToast.warning(message);
-      return;
+    setErrors({});
+    const newErrors = {};
+    if (!formData.name) newErrors.name = 'Product name is required';
+    if (!formData.description) newErrors.description = 'Description is required';
+    if (!formData.category) newErrors.category = 'Category is required';
+    if (!formData.price && formData.price !== 0) newErrors.price = 'Price is required';
+    if (formData.price && (isNaN(formData.price) || parseFloat(formData.price) <= 0)) newErrors.price = 'Price must be a positive number';
+    if (formData.discountPrice && isNaN(formData.discountPrice)) newErrors.discountPrice = 'Discount price must be a number';
+    if (!formData.stock && formData.stock !== 0) newErrors.stock = 'Stock is required';
+    if (formData.stock && (isNaN(formData.stock) || parseInt(formData.stock) < 0)) newErrors.stock = 'Stock must be a non-negative integer';
+    if (!formData.image) newErrors.image = 'Image URL is required';
+    else {
+      try {
+        new URL(formData.image);
+      } catch (_) {
+        newErrors.image = 'Enter a valid image URL';
+      }
     }
 
-    if (isNaN(formData.price) || parseFloat(formData.price) <= 0) {
-      const message = 'Price must be a positive number';
-      setError(message);
-      showToast.warning(message);
-      return;
-    }
-
-    if (isNaN(formData.stock) || parseInt(formData.stock) < 0) {
-      const message = 'Stock must be a non-negative number';
-      setError(message);
-      showToast.warning(message);
+    if (Object.keys(newErrors).length) {
+      setErrors(newErrors);
+      showToast.warning('Please fix the highlighted fields');
       return;
     }
 
@@ -149,6 +152,7 @@ export default function AddProduct() {
             className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
             disabled={loading}
           />
+          {errors.name && <p className="text-sm text-red-600 mt-1">{errors.name}</p>}
         </div>
 
         <div className="mb-6">
@@ -165,6 +169,7 @@ export default function AddProduct() {
             className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
             disabled={loading}
           />
+          {errors.description && <p className="text-sm text-red-600 mt-1">{errors.description}</p>}
         </div>
 
         <div className="grid grid-cols-2 gap-6 mb-6">
@@ -187,6 +192,7 @@ export default function AddProduct() {
                 </option>
               ))}
             </select>
+            {errors.category && <p className="text-sm text-red-600 mt-1">{errors.category}</p>}
           </div>
 
           <div>
@@ -205,6 +211,7 @@ export default function AddProduct() {
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
               disabled={loading}
             />
+            {errors.price && <p className="text-sm text-red-600 mt-1">{errors.price}</p>}
           </div>
         </div>
 
@@ -225,6 +232,7 @@ export default function AddProduct() {
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
               disabled={loading}
             />
+            {errors.discountPrice && <p className="text-sm text-red-600 mt-1">{errors.discountPrice}</p>}
           </div>
 
           <div>
@@ -242,6 +250,7 @@ export default function AddProduct() {
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
               disabled={loading}
             />
+            {errors.stock && <p className="text-sm text-red-600 mt-1">{errors.stock}</p>}
           </div>
         </div>
 
@@ -259,6 +268,7 @@ export default function AddProduct() {
             className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-600"
             disabled={loading}
           />
+          {errors.image && <p className="text-sm text-red-600 mt-1">{errors.image}</p>}
           {formData.image && (
             <div className="mt-4">
               <img
