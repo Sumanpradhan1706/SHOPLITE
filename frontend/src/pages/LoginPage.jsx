@@ -8,6 +8,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -15,6 +16,16 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setErrors({});
+    // Client-side validation
+    const newErrors = {};
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!email || !emailRegex.test(email)) newErrors.email = 'Enter a valid email address';
+    if (!password) newErrors.password = 'Password is required';
+    if (Object.keys(newErrors).length) {
+      setErrors(newErrors);
+      return;
+    }
     setLoading(true);
 
     try {
@@ -60,6 +71,9 @@ export default function LoginPage() {
               required
               disabled={loading}
             />
+            {errors.email && (
+              <p className="text-sm text-red-600 mt-1">{errors.email}</p>
+            )}
           </div>
           <div>
             <label className="block text-gray-700 mb-2" htmlFor="password">
@@ -74,6 +88,9 @@ export default function LoginPage() {
               required
               disabled={loading}
             />
+            {errors.password && (
+              <p className="text-sm text-red-600 mt-1">{errors.password}</p>
+            )}
           </div>
           <button
             type="submit"
