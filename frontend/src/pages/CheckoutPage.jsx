@@ -125,10 +125,10 @@ export default function CheckoutPage() {
 
   if (orderPlaced) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow p-8">
+      <div className="container mx-auto px-4 py-8 animate-fadeIn">
+        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow p-8 animate-scaleIn">
           <div className="text-center mb-8">
-            <div className="text-6xl text-green-600 mb-4">✓</div>
+            <div className="text-6xl text-green-600 mb-4 animate-bounce">✓</div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Order Placed Successfully!</h1>
             <p className="text-gray-600 mb-4">Thank you for your purchase</p>
           </div>
@@ -160,13 +160,13 @@ export default function CheckoutPage() {
           <div className="flex flex-col gap-4">
             <button
               onClick={() => navigate('/orders')}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded font-semibold transition"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded font-semibold transition-all hover:shadow-lg hover:scale-105 active:scale-95"
             >
               View Order History
             </button>
             <button
               onClick={() => navigate('/')}
-              className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded font-semibold transition"
+              className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 py-3 rounded font-semibold transition-all hover:shadow-lg hover:scale-105 active:scale-95"
             >
               Continue Shopping
             </button>
@@ -194,7 +194,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 relative">
+    <div className="container mx-auto px-4 py-8 relative animate-fadeIn">
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-8 text-center">

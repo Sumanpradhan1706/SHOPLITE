@@ -70,7 +70,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 animate-fadeIn">
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-md p-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">Shopping Cart</h1>
@@ -95,28 +95,28 @@ export default function CartPage() {
           ) : (
             <>
               <div className="space-y-4 mb-8">
-                {cart.items.map((item) => (
-                  <div key={item.productId._id || item.productId} className="flex items-center gap-4 border-b pb-4">
+                {cart.items.map((item, index) => (
+                  <div key={item.productId._id || item.productId} className="flex items-center gap-4 border-b pb-4 animate-slideInUp" style={{ animationDelay: `${index * 0.1}s` }}>
                     <img
                       src={item.image || 'https://via.placeholder.com/100'}
                       alt={item.productName}
-                      className="w-24 h-24 object-cover rounded"
+                      className="w-24 h-24 object-cover rounded transition-transform hover:scale-110"
                     />
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-800">{item.productName}</h3>
+                      <h3 className="text-lg font-semibold text-gray-800 transition-colors hover:text-blue-600">{item.productName}</h3>
                       <p className="text-gray-600">${item.discountPrice || item.price}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => updateQuantity(item.productId._id || item.productId, item.quantity - 1)}
-                        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                        className="px-3 py-1 bg-gray-200 rounded transition-all hover:bg-gray-300 hover:scale-110 active:scale-95"
                       >
                         -
                       </button>
-                      <span className="px-4">{item.quantity}</span>
+                      <span className="px-4 font-semibold">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.productId._id || item.productId, item.quantity + 1)}
-                        className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                        className="px-3 py-1 bg-gray-200 rounded transition-all hover:bg-gray-300 hover:scale-110 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={item.quantity >= item.stock}
                       >
                         +
@@ -127,7 +127,7 @@ export default function CartPage() {
                     </div>
                     <button
                       onClick={() => removeItem(item.productId._id || item.productId)}
-                      className="text-red-600 hover:text-red-800"
+                      className="text-red-600 hover:text-red-800 transition-all hover:scale-125 active:scale-95"
                     >
                       ✕
                     </button>
