@@ -37,6 +37,9 @@ function App() {
                 draggable
                 pauseOnHover
                 theme="light"
+                transition:Slide
+                className="toast-container"
+                toastClassName="toast-notification"
               />
               <Routes>
               <Route path="/" element={<HomePage />} />
