@@ -6,12 +6,12 @@ export default function LoadingSpinner({ size = 'medium', message = 'Loading...'
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-8">
+    <div className="flex flex-col items-center justify-center py-8 animate-fadeIn">
       <div
         className={`${sizes[size]} border-blue-600 border-t-transparent rounded-full animate-spin`}
       ></div>
       {message && (
-        <p className="mt-4 text-gray-600 text-center">{message}</p>
+        <p className="mt-4 text-gray-600 text-center animate-pulse">{message}</p>
       )}
     </div>
   );
