@@ -37,7 +37,7 @@ export default function HomePage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f3f4f6' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f3f4f6' }} className="animate-fadeIn">
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1rem' }}>
         <h1 style={{ fontSize: '2.25rem', fontWeight: 'bold', textAlign: 'center', color: '#1f2937', marginBottom: '2rem' }}>
           Welcome to ShopLite
@@ -47,11 +47,12 @@ export default function HomePage() {
         </p>
 
         {error && (
-          <div style={{ backgroundColor: '#fee2e2', border: '1px solid #fca5a5', color: '#991b1b', padding: '1rem', borderRadius: '0.375rem', marginBottom: '1.5rem', textAlign: 'center' }}>
+          <div style={{ backgroundColor: '#fee2e2', border: '1px solid #fca5a5', color: '#991b1b', padding: '1rem', borderRadius: '0.375rem', marginBottom: '1.5rem', textAlign: 'center' }} className="animate-slideInUp">
             {error}
             <button 
               onClick={fetchProducts}
               style={{ marginLeft: '1rem', textDecoration: 'underline', fontWeight: '600', cursor: 'pointer', background: 'none', border: 'none', color: 'inherit' }}
+              className="transition-all hover:scale-110 active:scale-95"
             >
               Retry
             </button>

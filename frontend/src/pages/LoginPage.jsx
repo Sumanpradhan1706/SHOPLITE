@@ -47,8 +47,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center animate-fadeIn">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md animate-scaleIn">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Login</h2>
         
         {error && (
@@ -94,7 +94,7 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 text-white py-2 rounded transition-all duration-300 hover:bg-blue-700 hover:shadow-lg hover:scale-105 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:scale-100"
             disabled={loading}
           >
             {loading ? 'Logging in...' : 'Login'}
