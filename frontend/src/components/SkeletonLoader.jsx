@@ -1,14 +1,14 @@
-// Skeleton base component
+// Skeleton base component with shimmer effect
 function SkeletonBase({ className = '' }) {
   return (
-    <div className={`animate-pulse bg-gray-300 rounded ${className}`}></div>
+    <div className={`animate-shimmer bg-gray-300 rounded ${className}`}></div>
   );
 }
 
 // Product Card Skeleton
 export function ProductCardSkeleton() {
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden animate-fadeIn">
       <SkeletonBase className="w-full h-48" />
       <div className="p-4 space-y-3">
         <SkeletonBase className="h-6 w-3/4" />
