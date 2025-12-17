@@ -72,18 +72,18 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 animate-fadeIn">
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="bg-white rounded-lg shadow-md p-8 animate-scaleIn">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
+            <div className="animate-slideInLeft overflow-hidden rounded-lg">
               <img
                 src={product.image || 'https://via.placeholder.com/400'}
                 alt={product.name}
-                className="w-full rounded-lg"
+                className="w-full rounded-lg transition-transform duration-500 hover:scale-110"
               />
             </div>
-            <div>
+            <div className="animate-slideInRight">
               <h1 className="text-3xl font-bold text-gray-800 mb-4">{product.name}</h1>
               <div className="mb-4">
                 <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded text-sm">
@@ -126,7 +126,7 @@ export default function ProductPage() {
               <button
                 onClick={handleAddToCart}
                 disabled={product.stock === 0 || addingToCart}
-                className="w-full bg-blue-600 text-white px-8 py-3 rounded hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 text-white px-8 py-3 rounded transition-all duration-300 hover:bg-blue-700 hover:shadow-lg hover:scale-105 active:scale-95 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {addingToCart ? 'Adding...' : product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
               </button>
