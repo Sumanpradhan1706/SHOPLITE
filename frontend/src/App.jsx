@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './components/Navbar';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -37,7 +37,7 @@ function App() {
                 draggable
                 pauseOnHover
                 theme="light"
-                transition:Slide
+                transition={Slide}
                 className="toast-container"
                 toastClassName="toast-notification"
               />
