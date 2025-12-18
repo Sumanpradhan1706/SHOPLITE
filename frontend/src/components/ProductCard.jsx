@@ -169,7 +169,9 @@ export default function ProductCard({ product }) {
                   )}
                 </div>
                 <p className="text-sm text-gray-500">Category: {product.category || 'General'}</p>
-                <p className="text-sm font-semibold {inStock ? 'text-green-600' : 'text-red-600'}">
+                <p
+                  className={`text-sm font-semibold ${inStock ? 'text-green-600' : 'text-red-600'}`}
+                >
                   {inStock ? `${stock} in stock` : 'Currently unavailable'}
                 </p>
                 <div className="flex gap-3 pt-2">
