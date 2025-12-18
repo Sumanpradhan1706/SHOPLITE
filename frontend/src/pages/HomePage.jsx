@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { ProductGridSkeleton } from '../components/SkeletonLoader';
 import { productAPI } from '../utils/api';
@@ -7,6 +8,13 @@ export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const searchQuery = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    return (params.get('search') || '').trim().toLowerCase();
+  }, [location.search]);
 
   useEffect(() => {
     fetchProducts();
@@ -17,9 +25,6 @@ export default function HomePage() {
       setLoading(true);
       setError('');
       const response = await productAPI.getAll();
-      
-      console.log('API Response:', response);
-      
       if (response.data?.success) {
         setProducts(response.data.data);
       } else if (response.data?.data) {
@@ -36,23 +41,36 @@ export default function HomePage() {
     }
   };
 
+  const filteredProducts = useMemo(() => {
+    if (!searchQuery) return products;
+    return products.filter((product) => {
+      const name = product.name?.toLowerCase() || '';
+      const description = product.description?.toLowerCase() || '';
+      return name.includes(searchQuery) || description.includes(searchQuery);
+    });
+  }, [products, searchQuery]);
+
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f3f4f6' }} className="animate-fadeIn">
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1rem' }}>
-        <h1 style={{ fontSize: '2.25rem', fontWeight: 'bold', textAlign: 'center', color: '#1f2937', marginBottom: '2rem' }}>
-          Welcome to ShopLite
-        </h1>
-        <p style={{ textAlign: 'center', color: '#4b5563', marginBottom: '3rem' }}>
-          Discover amazing products at unbeatable prices
-        </p>
+    <div className="min-h-screen bg-gray-50 animate-fadeIn">
+      <div className="max-w-6xl mx-auto px-4 py-10">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
+            Welcome to ShopLite
+          </h1>
+          <p className="text-gray-600 text-lg">Discover amazing products at unbeatable prices</p>
+          {searchQuery && (
+            <p className="mt-2 text-sm text-gray-500">
+              Showing results for <span className="font-semibold text-gray-700">“{searchQuery}”</span> ({filteredProducts.length})
+            </p>
+          )}
+        </div>
 
         {error && (
-          <div style={{ backgroundColor: '#fee2e2', border: '1px solid #fca5a5', color: '#991b1b', padding: '1rem', borderRadius: '0.375rem', marginBottom: '1.5rem', textAlign: 'center' }} className="animate-slideInUp">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6 text-center animate-slideInUp">
             {error}
-            <button 
+            <button
               onClick={fetchProducts}
-              style={{ marginLeft: '1rem', textDecoration: 'underline', fontWeight: '600', cursor: 'pointer', background: 'none', border: 'none', color: 'inherit' }}
-              className="transition-all hover:scale-110 active:scale-95"
+              className="ml-3 font-semibold underline hover:text-red-800 transition-colors"
             >
               Retry
             </button>
@@ -61,20 +79,31 @@ export default function HomePage() {
 
         {loading ? (
           <ProductGridSkeleton count={8} />
-        ) : products.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '5rem 0' }}>
-            <p style={{ color: '#4b5563', fontSize: '1.25rem' }}>No products available.</p>
-            <p style={{ color: '#6b7280', marginTop: '0.5rem' }}>Check back soon for new arrivals!</p>
+        ) : filteredProducts.length === 0 ? (
+          <div className="text-center py-16 bg-white rounded-lg shadow-sm">
+            <p className="text-xl text-gray-800 font-semibold">
+              {searchQuery ? 'No products match your search.' : 'No products available.'}
+            </p>
+            <p className="text-gray-500 mt-2">
+              {searchQuery ? 'Try a different keyword or clear your search.' : 'Check back soon for new arrivals!'}
+            </p>
+            {searchQuery && (
+              <button
+                onClick={() => navigate('/')}
+                className="mt-4 px-5 py-2 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 transition-all hover:shadow-md"
+              >
+                Clear search
+              </button>
+            )}
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
-            {products.map((product) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filteredProducts.map((product) => (
               <ProductCard key={product._id} product={{ ...product, id: product._id }} />
             ))}
           </div>
         )}
       </div>
-
     </div>
   );
 }
